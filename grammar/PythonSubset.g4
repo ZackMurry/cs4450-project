@@ -29,7 +29,12 @@ additiveExpr
     ;
 
 multiplicativeExpr
-    : primaryExpr (BIN_OP_HIGH_PRECEDENCE primaryExpr)*
+    : signedExpr (BIN_OP_HIGH_PRECEDENCE signedExpr)*
+    ;
+
+signedExpr
+    : BIN_OP_LOW_PRECEDENCE signedExpr
+    | primaryExpr
     ;
 
 primaryExpr
@@ -80,7 +85,7 @@ STRING
 
 // Signed integers and floats
 NUMBER
-    : '-'? [0-9]+ ('.' [0-9]+)?
+    : [0-9]+ ('.' [0-9]+)?
     ;
 
 // Must start with alphabetic character (or underscore), but can have numbers after the first char
@@ -95,4 +100,3 @@ NEWLINE
 WS
     : [ \t]+ -> skip
     ;
-
