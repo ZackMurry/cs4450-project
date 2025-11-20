@@ -74,10 +74,6 @@ class IndentationTokenProcessor(TokenSource):
         return tok
     
     def _make_token(self, token_type : int | None, prototype: Token):
-        """
-        Create a synthetic INDENT/DEDENT token based on an existing token.
-        """
-        # self.line = self.getLine()
         t = CommonToken(
             (self.lexer, self.lexer.inputStream),
             token_type,
