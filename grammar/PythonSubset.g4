@@ -10,6 +10,8 @@ program
 // For now, the only statements are assignments
 statement
     : assignment
+    | if_statement
+    | NEWLINE
     ;
 
 // Assignments are either = or augmenting assignments like +=, -=, etc.
@@ -56,12 +58,31 @@ literal
     | BOOL
     ;
 
+if_statement
+    : IF condition COLON NEWLINE block
+      ( ELIF condition COLON NEWLINE block )*
+      ( ELSE COLON NEWLINE block )?
+    ;
+
+block
+    : INDENT statement+ DEDENT
+    ;
+
+condition
+    : comparisonExpr
+    ;
+
+comparisonExpr
+    : additiveExpr (COMP_OP additiveExpr)?
+    ;
 
 // Lexer Rules
 
 ASSIGN      : '=';
+COLON       : ':';
 AUG_ASSIGN  : '+=' | '-=' | '*=' | '/=';
 BOOL        : 'True' | 'False';
+COMP_OP     : '==' | '!=' | '<' | '<=' | '>' | '>=';
 
 
 // We divide binary operators into high and low precedence to accurately group expressions like 1 + 2 * 3 into 1 + (2 * 3) instead of (1 + 2) * 3
@@ -100,3 +121,15 @@ NEWLINE
 WS
     : [ \t]+ -> skip
     ;
+
+// Keywords
+
+IF  : 'if';
+ELIF    : 'elif';
+ELSE    : 'else';
+
+
+// Special (indentation)
+INDENT  : '<<INDENT>>';
+DEDENT  : '<<DEDENT>>';
+
