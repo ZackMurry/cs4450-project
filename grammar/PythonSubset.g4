@@ -43,7 +43,7 @@ primaryExpr
     : literal
     | IDENTIFIER
     | listLiteral
-    | '(' expression ')'
+    | '(' condition ')'
     ;
 
 // List literal: zero or more expressions delimited by commas
@@ -69,7 +69,19 @@ block
     ;
 
 condition
-    : comparisonExpr
+    : orExpr
+    ;
+
+orExpr
+    : andExpr (OR andExpr)*
+    ;
+
+andExpr
+    : notExpr (AND notExpr)*
+    ;
+
+notExpr
+    : (NOT)* comparisonExpr
     ;
 
 comparisonExpr
@@ -83,6 +95,18 @@ COLON       : ':';
 AUG_ASSIGN  : '+=' | '-=' | '*=' | '/=';
 BOOL        : 'True' | 'False';
 COMP_OP     : '==' | '!=' | '<' | '<=' | '>' | '>=';
+
+// Keywords
+
+IF      : 'if';
+ELIF    : 'elif';
+ELSE    : 'else';
+
+// Logical operations
+
+AND : 'and';
+OR  : 'or';
+NOT : 'not';
 
 
 // We divide binary operators into high and low precedence to accurately group expressions like 1 + 2 * 3 into 1 + (2 * 3) instead of (1 + 2) * 3
@@ -122,14 +146,7 @@ WS
     : [ \t]+ -> skip
     ;
 
-// Keywords
-
-IF  : 'if';
-ELIF    : 'elif';
-ELSE    : 'else';
-
 
 // Special (indentation)
 INDENT  : '<<INDENT>>';
 DEDENT  : '<<DEDENT>>';
-
