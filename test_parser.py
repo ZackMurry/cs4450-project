@@ -1,9 +1,13 @@
 import sys
-from antlr4 import FileStream, CommonTokenStream, Token
+from typing import Union
+from antlr4 import FileStream, CommonTokenStream, ParserRuleContext, Token
 from antlr4.Token import CommonToken
 from antlr4.Lexer import TokenSource
+from antlr4.tree.Tree import TerminalNodeImpl
+from antlr4.tree.Trees import Trees
 from grammar.PythonSubsetLexer import PythonSubsetLexer as Lexer
 from grammar.PythonSubsetParser import PythonSubsetParser as Parser
+from graphviz import Digraph
 
 class IndentationTokenProcessor(TokenSource):
     def __init__(self, lexer: Lexer):
@@ -85,6 +89,30 @@ class IndentationTokenProcessor(TokenSource):
         t.column = 0
         return t
 
+# Parse tree PNG visualizer using graphviz/dot
+def tree_to_dot(tree, parser):
+    dot = Digraph()
+    counter = 0
+
+    # Recursive DFS to add parse tree nodes to digraph
+    def walk(node: Union[ParserRuleContext, TerminalNodeImpl]):
+        nonlocal counter
+        node_id = counter
+        counter += 1
+
+        label = Trees.getNodeText(node, parser.ruleNames)
+        dot.node(str(node_id), label)
+        print(type(node))
+        if not isinstance(node, TerminalNodeImpl):
+            for child in node.getChildren():
+                child_id = walk(child)
+                dot.edge(str(node_id), str(child_id))
+
+        return node_id
+
+    walk(tree)
+    return dot
+
 def main(filename):
     input_stream = FileStream(filename)
     lexer = Lexer(input_stream)
@@ -96,6 +124,10 @@ def main(filename):
     parser = Parser(stream)
     tree = parser.program()  # Start rule
     print(tree.toStringTree(recog=parser))  # Print parse tree
+
+    # Also save parse tree to disk as PNG
+    dot = tree_to_dot(tree, parser)
+    dot.render("parse_tree", format="png", cleanup=True)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
