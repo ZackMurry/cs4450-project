@@ -13,6 +13,7 @@ statement
     | if_statement
     | while_statement
     | for_statement
+    | expression
     | NEWLINE
     ;
 
@@ -43,7 +44,7 @@ signedExpr
 
 primaryExpr
     : literal
-    | IDENTIFIER functionCallSuffix?
+    | functionCall
     | listLiteral
     | '(' condition ')'
     ;
@@ -96,6 +97,10 @@ notExpr
 
 comparisonExpr
     : additiveExpr (COMP_OP additiveExpr)?
+    ;
+
+functionCall
+    : IDENTIFIER functionCallSuffix?
     ;
 
 // Function call syntax is IDENT([expression[, expression]*]?)
