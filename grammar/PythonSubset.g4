@@ -7,7 +7,7 @@ program
     : statement* EOF
     ;
 
-// For now, the only statements are assignments
+// Everything is a statement, including blank lines
 statement
     : assignment
     | if_statement
@@ -170,15 +170,14 @@ LINE_COMMENT
     : '#' ~[\r\n]* -> skip
     ;
 
-// Multi-line comments (docstrings)
-// Triple single-quote docstring: Skip all content until the closing '''
-// We use {greedy=false;} to ensure it stops at the *first* closing sequence.
-DOCSTRING_SINGLE
+// ''' multiline comments
+// Using non-greedy Kleene star (*?) to match as few characters as possible
+MULTILINE_COMMENT_SINGLE
     : '\'\'\'' ( . )*? '\'\'\'' -> skip
     ;
 
-// Triple double-quote docstring: Skip all content until the closing """
-DOCSTRING_DOUBLE
+// """ multiline comments using non-greedy Kleene stars
+MULTILINE_COMMENT_DOUBLE
     : '"""' ( .)*? '"""' -> skip
     ;
 
