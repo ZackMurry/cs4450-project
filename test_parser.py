@@ -100,9 +100,12 @@ def tree_to_dot(tree, parser):
         node_id = counter
         counter += 1
 
-        label = Trees.getNodeText(node, parser.ruleNames)
+        label: str = Trees.getNodeText(node, parser.ruleNames)
+        label = (label.replace('<', '&lt;')
+                    .replace('>', '&gt;')
+                    .replace('\r\n', '\\\\n'))
+        label = label.replace('\r\n', '\\\\n')
         dot.node(str(node_id), label)
-        print(type(node))
         if not isinstance(node, TerminalNodeImpl):
             for child in node.getChildren():
                 child_id = walk(child)

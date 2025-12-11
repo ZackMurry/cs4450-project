@@ -11,6 +11,8 @@ program
 statement
     : assignment
     | if_statement
+    | while_statement
+    | for_statement
     | NEWLINE
     ;
 
@@ -41,7 +43,7 @@ signedExpr
 
 primaryExpr
     : literal
-    | IDENTIFIER
+    | IDENTIFIER functionCallSuffix?
     | listLiteral
     | '(' condition ')'
     ;
@@ -62,6 +64,14 @@ if_statement
     : IF condition COLON NEWLINE block
       ( ELIF condition COLON NEWLINE block )*
       ( ELSE COLON NEWLINE block )?
+    ;
+
+while_statement
+    : WHILE condition COLON NEWLINE block
+    ;
+
+for_statement
+    : FOR IDENTIFIER IN expression COLON NEWLINE block
     ;
 
 block
@@ -88,6 +98,11 @@ comparisonExpr
     : additiveExpr (COMP_OP additiveExpr)?
     ;
 
+// Function call syntax is IDENT([expression[, expression]*]?)
+functionCallSuffix
+    : '(' (expression (',' expression)*)? ')'
+    ;
+
 // Lexer Rules
 
 ASSIGN      : '=';
@@ -101,6 +116,9 @@ COMP_OP     : '==' | '!=' | '<' | '<=' | '>' | '>=';
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
+WHILE    : 'while';
+FOR    : 'for';
+IN    : 'in';
 
 // Logical operations
 
@@ -144,6 +162,24 @@ NEWLINE
 
 WS
     : [ \t]+ -> skip
+    ;
+
+// Comments (skip them)
+
+LINE_COMMENT
+    : '#' ~[\r\n]* -> skip
+    ;
+
+// Multi-line comments (docstrings)
+// Triple single-quote docstring: Skip all content until the closing '''
+// We use {greedy=false;} to ensure it stops at the *first* closing sequence.
+DOCSTRING_SINGLE
+    : '\'\'\'' ( . )*? '\'\'\'' -> skip
+    ;
+
+// Triple double-quote docstring: Skip all content until the closing """
+DOCSTRING_DOUBLE
+    : '"""' ( .)*? '"""' -> skip
     ;
 
 
