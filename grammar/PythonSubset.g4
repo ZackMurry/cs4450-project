@@ -44,9 +44,10 @@ signedExpr
 
 primaryExpr
     : literal
-    | functionCall
     | listLiteral
     | '(' condition ')'
+    | IDENTIFIER
+    | functionCall
     ;
 
 // List literal: zero or more expressions delimited by commas
@@ -99,13 +100,9 @@ comparisonExpr
     : additiveExpr (COMP_OP additiveExpr)?
     ;
 
-functionCall
-    : IDENTIFIER functionCallSuffix
-    ;
-
 // Function call syntax is IDENT([expression[, expression]*]?)
-functionCallSuffix
-    : '(' (expression (',' expression)*)? ')'
+functionCall
+    : IDENTIFIER '(' (expression (',' expression)*)? ')'
     ;
 
 // Lexer Rules
