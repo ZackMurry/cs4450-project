@@ -6,7 +6,7 @@ Group name: Bulldog Nation
 
 # Demo Video
 
-<video src="demo.mp4" width="320" height="240" controls></video>
+https://github.com/user-attachments/assets/71afd4f6-b63a-41b6-ab35-46d87799b1db
 
 # Dependencies
 
