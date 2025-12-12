@@ -4,6 +4,10 @@ Created by Andrew Hellman and Zack Murry for the CS 4450 Principles of Programmi
 
 Group name: Bulldog Nation
 
+# Demo Video
+
+<video src="demo.mp4" width="320" height="240" controls></video>
+
 # Dependencies
 
 - python3 (tested on Python 3.13.7)
