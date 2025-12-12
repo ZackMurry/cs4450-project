@@ -100,7 +100,7 @@ comparisonExpr
     ;
 
 functionCall
-    : IDENTIFIER functionCallSuffix?
+    : IDENTIFIER functionCallSuffix
     ;
 
 // Function call syntax is IDENT([expression[, expression]*]?)
